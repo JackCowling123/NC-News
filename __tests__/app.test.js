@@ -6,6 +6,8 @@ const testData = require('../db/data/test-data');
 const endpointsJson = require('../endpoints.json');
 
 
+
+
 beforeEach(()=>{
     return seed(testData)
 })
@@ -24,7 +26,6 @@ describe('GET /api/topics', () => {
     test('Returns status code 200 when GET request to /api/topics is made', () => {
         return request(app).get('/api/topics').expect(200)
             .then(({body}) => {
-                console.log(body);
                 expect(Array.isArray(body.topics)).toBe(true);
                 expect(body.topics.length).toBe(testData.topicData.length);
                 body.topics.forEach(topic => {
@@ -79,3 +80,30 @@ describe('GET /api/articles/:article_id', () => {
     })
 
 })
+
+describe.only('GET /api/articles', () => {
+    test('Responds with a status 200 containing all articles, sorted by date in descending order', () => {
+        return request(app).get('/api/articles').expect(200)
+            .then(({body}) => {
+
+                expect(typeof body).toBe('object');
+                const allArticlesBody = body.allArticles;
+                //hard code all to be from the data
+                expect(allArticlesBody.length).toBe(13);
+                allArticlesBody.forEach(article => {
+                    expect(article).toHaveProperty('author');
+                    expect(article).toHaveProperty('title');
+                    expect(article).toHaveProperty('article_id');
+                    expect(article).toHaveProperty('topic');
+                    expect(article).toHaveProperty('created_at');
+                    expect(article).toHaveProperty('votes');
+                    expect(article).toHaveProperty('article_img_url');
+                    expect(article).toHaveProperty('comment_count');
+                    expect(article).not.toHaveProperty('body');
+                })
+            })
+    })
+    // unsure of what errors to test for here specifically
+
+})
+
