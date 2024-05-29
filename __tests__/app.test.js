@@ -14,6 +14,9 @@ afterAll(() => db.end());
 describe('Potential errors', () => {
     test('GET:404 sends an appropriate status when a request with a spelling error is made', () => {
         return request(app).get('/api/topicx').expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Invalid input');
+            });
     })
 
 })
@@ -21,20 +24,11 @@ describe('Potential errors', () => {
 describe('GET /api/topics', () => {
     test('Returns status code 200 when GET request to /api/topics is made', () => {
         return request(app).get('/api/topics').expect(200)
-    })
-    test('Returns an array of topic objects when GET request to /api/topics is made', () => {
-        return request(app).get('/api/topics').expect(200)
             .then(({body}) => {
-                expect(Array.isArray(body)).toBe(true);
-                body.forEach(topic => {
-                    expect(topic)
-                })
-            })
-    })
-    test('Each topic object has a "slug" and "description" property', () => {
-        return request(app).get('/api/topics').expect(200)
-            .then(({body}) => {
-                body.forEach(topic => {
+                console.log(body);
+                expect(Array.isArray(body.topics)).toBe(true);
+                expect(body.topics.length).toBe(testData.topicData.length);
+                body.topics.forEach(topic => {
                     expect(topic).toHaveProperty('slug');
                     expect(topic).toHaveProperty('description');
                 })
@@ -43,17 +37,13 @@ describe('GET /api/topics', () => {
 })
 
 describe('GET /api', () => {
-    test(JSON.stringify(endpointsJson['GET /api'].description), () => {
+    test('Responds with the endpoints.json content', () => {
 
         return request(app).get('/api').expect(200)
-            .then(({body: body}) => {
+            .then(({body}) => {
                 expect(typeof body).toBe('object');
-                for (const key in body) {
-                     expect(body[key]).toHaveProperty('description');
-                    expect(body[key]).toHaveProperty('queries');
-                    expect(body[key]).toHaveProperty('exampleResponse');
-                }
                 expect(body).toEqual(endpointsJson);
             })
     })
+
 })
