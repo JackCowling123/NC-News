@@ -17,9 +17,8 @@ describe('Potential errors', () => {
             .then(({ body }) => {
                 expect(body.msg).toBe('Invalid input');
             });
-    })
-
-})
+    });
+});
 
 describe('GET /api/topics', () => {
     test('Returns status code 200 when GET request to /api/topics is made', () => {
@@ -38,12 +37,45 @@ describe('GET /api/topics', () => {
 
 describe('GET /api', () => {
     test('Responds with the endpoints.json content', () => {
-
         return request(app).get('/api').expect(200)
             .then(({body}) => {
                 expect(typeof body).toBe('object');
                 expect(body).toEqual(endpointsJson);
             })
+    })
+
+})
+
+describe('GET /api/articles/:article_id', () => {
+    test('Responds with a status 200 containing the correct article object, with the correct properties', () => {
+        return request(app).get('/api/articles/6').expect(200)
+            .then(({body}) => {
+
+                expect(typeof body).toBe('object');
+                const articleBody = body.article;
+                //hard code all to be from the data
+
+                expect(articleBody.title).toBe("A");
+                expect(articleBody.topic).toBe("mitch");
+                expect(articleBody.author).toBe("icellusedkars");
+                expect(articleBody.body).toBe("Delicious tin of cat food");
+                expect(articleBody.author).toBe("icellusedkars");
+                expect(articleBody.article_img_url).toBe("https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700");
+
+                expect(articleBody.article_id).toBe(6);
+            })
+    })
+    test('Responds with a status 400 when passed an article which is not a number', () => {
+        return request(app).get('/api/articles/simon').expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe('Bad request');
+            });
+    })
+    test('Responds with a 404 status containing an appropriate response', () => {
+        return request(app).get('/api/articles/999999999').expect(404)
+            .then(({ body }) => {
+                expect(body.msg).toBe('No user found for user_id: 999999999');
+            });
     })
 
 })
