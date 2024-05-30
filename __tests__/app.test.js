@@ -88,7 +88,6 @@ describe('GET /api/articles', () => {
 
                 expect(typeof body).toBe('object');
                 const allArticlesBody = body.allArticles;
-                console.log(allArticlesBody, 'all articles');
 
                 expect(allArticlesBody.length).toBe(13);
                 allArticlesBody.forEach(article => {
@@ -122,7 +121,6 @@ describe('GET /api/articles/:article_id/comments', () => {
     test('Responds with a status 200 an array of comments for the given article_id of which each comment should be sorted in date order', () => {
         return request(app).get('/api/articles/9/comments').expect(200)
             .then(({body}) => {
-                console.log(body, 'test');
                 expect(Array.isArray(body)).toBe(true);
                 body.forEach(comment => {
                     expect(comment).toHaveProperty('comment_id');
@@ -145,3 +143,14 @@ describe('GET /api/articles/:article_id/comments', () => {
     })
 })
 
+describe('POST /api/articles/:article_id/comments', () => {
+    test('Responds with a status 201 containing the posted comment', () => {
+        const testPostComment = {username: 'testing' , body: "Testing the waters"};
+
+        return request(app).post('/api/articles/9/comments').expect(200)
+            .then(({body}) => {
+                console.log(body);
+                expect(body).toEqual(testPostComment);
+            })
+    })
+})

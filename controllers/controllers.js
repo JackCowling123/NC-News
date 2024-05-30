@@ -1,4 +1,4 @@
-const {selectTopics, selectArticleByID, selectAllArticles, selectCommentsByArticle} = require('../models/models.js')
+const {selectTopics, selectArticleByID, selectAllArticles, selectCommentsByArticle, sendCommentByArticle} = require('../models/models.js')
 const endpointsJson = require('../endpoints.json');
 
 exports.getTopics = (req, res, next) => {
@@ -48,3 +48,11 @@ exports.getCommentsByArticle = (req, res, next) => {
         });
 }
 
+exports.postCommentByArticle = (req, res, next) => {
+    console.log('controllers');
+    const { article_id } = req.params;
+    sendCommentByArticle(article_id)
+        .then(() => {
+
+        })
+}

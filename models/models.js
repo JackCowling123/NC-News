@@ -35,3 +35,8 @@ exports.selectCommentsByArticle = (article_id) => {
             return result.rows;
     })
 }
+
+exports.sendCommentByArticle = (article_id) => {
+    console.log('models');
+    // return (`UPDATE rides SET ride_name = $1 WHERE ride_id = $2 RETURNING *;`, [newRideName, ride_id]);
+}
