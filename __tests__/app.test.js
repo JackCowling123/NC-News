@@ -145,12 +145,31 @@ describe('GET /api/articles/:article_id/comments', () => {
 
 describe('POST /api/articles/:article_id/comments', () => {
     test('Responds with a status 201 containing the posted comment', () => {
-        const testPostComment = {username: 'testing' , body: "Testing the waters"};
-
-        return request(app).post('/api/articles/9/comments').expect(200)
+        const testPostComment = {username: 'butter_bridge' , body: "Asked him how his weekend was, on Thursday"};
+        let postResult = 0
+        return request(app).post('/api/articles/9/comments').send(testPostComment).expect(201)
             .then(({body}) => {
-                console.log(body);
-                expect(body).toEqual(testPostComment);
+                postResult = body;
+                expect(body.comment_id).toBe( 19);
+                expect(body.body).toBe( 'Asked him how his weekend was, on Thursday');
+                expect(body.article_id).toBe( 9);
+                expect(body.author).toBe( 'butter_bridge');
+                expect(body.votes).toBe( 0);
+                expect(body.created_at).not.toBe(null);
+            })
+    })
+    test('Responds with a status 400 Bad Request when given an object with malformed body / missing required fields', () => {
+        const testPostComment = {};
+        return request(app).post('/api/articles/9/comments').send(testPostComment).expect(400)
+            .then(({body}) => {
+                expect(body.msg).toBe('Bad request');
+            })
+    })
+    test('Responds with a status 400 Bad Request when given an object fails schema validation', () => {
+        const testPostComment = {username: 'Jowlingg' , body: "Asked him how his Christmas was, in November"};
+        return request(app).post('/api/articles/9/comments').send(testPostComment).expect(400)
+            .then(({body}) => {
+                expect(body.msg).toBe('Bad request');
             })
     })
 })

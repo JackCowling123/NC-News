@@ -31,12 +31,22 @@ exports.selectAllArticles = () => {
 exports.selectCommentsByArticle = (article_id) => {
     return db.query('SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC;', [article_id])
         .then((result) => {
-            console.log(result.rows, 'models');
             return result.rows;
     })
 }
 
-exports.sendCommentByArticle = (article_id) => {
-    console.log('models');
-    // return (`UPDATE rides SET ride_name = $1 WHERE ride_id = $2 RETURNING *;`, [newRideName, ride_id]);
+exports.insertCommentByArticle = (article_id, newComment) => {
+    const commentUsername = newComment.username;
+    const commentBody = newComment.body;
+
+    return db.query(`
+INSERT INTO comments (article_id, author, body, votes, created_at)
+VALUES ($1, $2, $3, 0, NOW()) 
+RETURNING *;`,
+        [article_id, commentUsername, commentBody]
+    ).then((result) => {
+        return result.rows;
+    }).catch((err) => {
+        throw err;
+    });
 }

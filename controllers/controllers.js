@@ -1,4 +1,4 @@
-const {selectTopics, selectArticleByID, selectAllArticles, selectCommentsByArticle, sendCommentByArticle} = require('../models/models.js')
+const {selectTopics, selectArticleByID, selectAllArticles, selectCommentsByArticle, insertCommentByArticle} = require('../models/models.js')
 const endpointsJson = require('../endpoints.json');
 
 exports.getTopics = (req, res, next) => {
@@ -27,7 +27,6 @@ exports.getArticlesID = (req, res, next) => {
 }
 
 exports.getAllArticles = (req, res, next) => {
-    console.log('controller');
     selectAllArticles()
         .then((allArticles) => {
             res.status(200).send({allArticles: allArticles});
@@ -49,10 +48,17 @@ exports.getCommentsByArticle = (req, res, next) => {
 }
 
 exports.postCommentByArticle = (req, res, next) => {
-    console.log('controllers');
     const { article_id } = req.params;
-    sendCommentByArticle(article_id)
-        .then(() => {
+    const newComment = req.body;
+    const articleIdParsed = parseInt(article_id, 10);
 
+
+    insertCommentByArticle(articleIdParsed, newComment)
+        .then((result) => {
+            const addedComment = result[0];
+            res.status(201).send(addedComment);
         })
+        .catch((err) => {
+            next(err);
+        });
 }
