@@ -1,11 +1,12 @@
 const express = require('express');
 const app = express();
-const {getTopics, getAPI, getArticlesID, getAllArticles} = require('./controllers/controllers.js')
+const {getTopics, getAPI, getArticlesID, getAllArticles, getCommentsByArticle} = require('./controllers/controllers.js')
 
 app.get('/api/topics', getTopics);
 app.get('/api', getAPI);
 app.get('/api/articles/:article_id', getArticlesID);
 app.get('/api/articles', getAllArticles);
+app.get('/api/articles/:article_id/comments', getCommentsByArticle);
 
 
 // Middleware to catch 404 errors (route not found)
@@ -16,7 +17,7 @@ app.use((req, res, next) => {
     next(err);
 });
 
-// Middleware to handle specific Postgres error codes
+// Middleware to handle specific error codes
 app.use((err, req, res, next) => {
     if (err.code === '22P02' || err.code === '23502') {
         res.status(400).send({ msg: 'Bad request' });
@@ -25,7 +26,7 @@ app.use((err, req, res, next) => {
     }
 });
 
-// General error handling middleware for known errors with status and message
+// General error handling
 app.use((err, req, res, next) => {
     if (err.status && err.msg) {
         res.status(err.status).send({ msg: err.msg });
