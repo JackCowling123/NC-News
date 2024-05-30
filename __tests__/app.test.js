@@ -173,3 +173,39 @@ describe('POST /api/articles/:article_id/comments', () => {
             })
     })
 })
+
+describe.only('Patch /api/articles/:article_id', () => {
+    test('Responds with a status 200 containing the posted comment, with votes incremented by 5', () => {
+        const testPatchArticle = { inc_votes: 5};
+
+        return request(app).patch('/api/articles/9').send(testPatchArticle).expect(200)
+            .then(({body}) => {
+                expect(body.votes).toBe(5);
+            })
+    })
+    test('Responds with a status 200 containing the posted comment, with votes decremented by 5', () => {
+        const testPatchArticle = { inc_votes: -5};
+
+        return request(app).patch('/api/articles/9').send(testPatchArticle).expect(200)
+            .then(({body}) => {
+                expect(body.votes).toBe(- 5);
+            })
+    })
+    test('Responds with a status 400 Bad Request when given an object with malformed body / missing required fields', () => {
+        const testPatchArticle = {};
+
+        return request(app).patch('/api/articles/9').send(testPatchArticle).expect(400)
+            .then(({body}) => {
+                expect(body.msg).toBe('Bad request');
+            })
+    })
+    test('Responds with a status 400 Bad Request when given an object fails schema validation', () => {
+        const testPatchArticle = {};
+
+        return request(app).patch('/api/articles/9').send(testPatchArticle).expect(400)
+            .then(({body}) => {
+                expect(body.msg).toBe('Bad request');
+            })
+    })
+
+})
