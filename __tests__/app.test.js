@@ -81,14 +81,15 @@ describe('GET /api/articles/:article_id', () => {
 
 })
 
-describe.only('GET /api/articles', () => {
+describe('GET /api/articles', () => {
     test('Responds with a status 200 containing all articles, sorted by date in descending order', () => {
         return request(app).get('/api/articles').expect(200)
             .then(({body}) => {
 
                 expect(typeof body).toBe('object');
                 const allArticlesBody = body.allArticles;
-                //hard code all to be from the data
+                console.log(allArticlesBody, 'all articles');
+
                 expect(allArticlesBody.length).toBe(13);
                 allArticlesBody.forEach(article => {
                     expect(article).toHaveProperty('author');
@@ -101,9 +102,46 @@ describe.only('GET /api/articles', () => {
                     expect(article).toHaveProperty('comment_count');
                     expect(article).not.toHaveProperty('body');
                 })
+
+                let descendingOrder = true;
+                for (let i = 1; i < allArticlesBody.length; i++){
+                    if (allArticlesBody[i-1].created_at < allArticlesBody[i].created_at){
+                        descendingOrder = false;
+                        break;
+                    }
+                }
+                expect(descendingOrder).toBe(true);
             })
+
     })
     // unsure of what errors to test for here specifically
 
+})
+
+describe('GET /api/articles/:article_id/comments', () => {
+    test('Responds with a status 200 an array of comments for the given article_id of which each comment should be sorted in date order', () => {
+        return request(app).get('/api/articles/9/comments').expect(200)
+            .then(({body}) => {
+                console.log(body, 'test');
+                expect(Array.isArray(body)).toBe(true);
+                body.forEach(comment => {
+                    expect(comment).toHaveProperty('comment_id');
+                    expect(comment).toHaveProperty('votes');
+                    expect(comment).toHaveProperty('created_at');
+                    expect(comment).toHaveProperty('author');
+                    expect(comment).toHaveProperty('body');
+                    expect(comment).toHaveProperty('article_id');
+                })
+                let descendingOrder = true;
+                for (let i = 1; i < body.length; i++){
+                    if (body[i-1].created_at < body[i].created_at){
+                        descendingOrder = false;
+                        break;
+                    }
+                }
+                // Am I getting these dates correct?
+                expect(descendingOrder).toBe(true);
+            })
+    })
 })
 
