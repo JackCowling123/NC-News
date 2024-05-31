@@ -39,7 +39,6 @@ exports.getAllArticles = (req, res, next) => {
                     msg: `No articles found for this topic: ${topic}`,
                 });
             }
-
             if (isArray) {
                 res.status(200).send(allArticles);
             } else {

@@ -271,3 +271,25 @@ describe('GET /api/articles (topic query)', () => {
     })
 })
 
+describe('GET /api/articles/:article_id (comment_count query)', () => {
+    test('Responds with a status 200 containing an array of objects, each containing the desired topic', () => {
+        return request(app).get('/api/articles/?comment_count=true').expect(200)
+            .then(({body}) => {
+
+                expect(typeof body).toBe('object');
+                const articleBody = body.article;
+                //hard code all to be from the data
+
+                expect(articleBody.title).toBe("A");
+                expect(articleBody.topic).toBe("mitch");
+                expect(articleBody.author).toBe("icellusedkars");
+                expect(articleBody.body).toBe("Delicious tin of cat food");
+                expect(articleBody.author).toBe("icellusedkars");
+                expect(articleBody.article_img_url).toBe("https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700");
+
+                expect(articleBody.article_id).toBe(6);
+            })
+    })
+
+})
+
