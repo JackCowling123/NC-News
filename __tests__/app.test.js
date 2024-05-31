@@ -232,7 +232,7 @@ describe('DELETE /api/comments/:comment_id', () => {
 
 })
 
-describe.only('GET /api/users', () => {
+describe('GET /api/users', () => {
     test('Responds with a status 200 containing an array of objects, each containing the desire properties', () => {
         return request(app).get('/api/users').expect(200)
             .then(({body}) => {
