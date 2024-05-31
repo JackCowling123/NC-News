@@ -72,3 +72,12 @@ exports.deleteComment = (commentId) => {
         DELETE FROM comments WHERE comment_id = $1;
     `, [commentId])
 }
+
+exports.returnAllUsers = () => {
+    return db.query('SELECT * FROM users')
+        .then((result) => {
+            return result.rows;
+        }).catch((err) => {
+            throw err;
+        });
+}
