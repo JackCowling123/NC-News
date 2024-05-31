@@ -253,3 +253,21 @@ describe('GET /api/users', () => {
             })
 })
 
+describe('GET /api/articles (topic query)', () => {
+    test('Responds with a status 200 containing an array of objects, each containing the desired topic', () => {
+        return request(app).get('/api/articles?topic=cats').expect(200)
+            .then(({body}) => {
+                expect(Array.isArray(body)).toBe(true);
+                body.forEach((article) => {
+                    expect(article.topic).toBe('cats');
+                })
+            })
+    })
+    test('Responds with a status 404 containing an appropriate message when no articles are found of requested topic', () => {
+        return request(app).get('/api/articles?topic=dogs').expect(404)
+            .then(({body}) => {
+                expect(body.msg).toContain('No articles found for this topic:');
+            })
+    })
+})
+

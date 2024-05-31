@@ -27,9 +27,24 @@ exports.getArticlesID = (req, res, next) => {
 }
 
 exports.getAllArticles = (req, res, next) => {
-    selectAllArticles()
-        .then((allArticles) => {
-            res.status(200).send({allArticles: allArticles});
+    const { topic } = req.query;
+    selectAllArticles(topic)
+        .then((result) => {
+            const allArticles = result.queryResult;
+            const isArray = result.topicQuery
+
+            if(allArticles.length === 0 && isArray){
+                return Promise.reject({
+                    status: 404,
+                    msg: `No articles found for this topic: ${topic}`,
+                });
+            }
+
+            if (isArray) {
+                res.status(200).send(allArticles);
+            } else {
+                res.status(200).send({allArticles: allArticles});
+            }
         })
         .catch((err) => {
             next(err);
