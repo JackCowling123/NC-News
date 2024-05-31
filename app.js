@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const {getTopics, getAPI, getArticlesID, getAllArticles, getCommentsByArticle, postCommentByArticle, patchArticle} = require('./controllers/controllers.js')
+const {getTopics, getAPI, getArticlesID, getAllArticles, getCommentsByArticle, postCommentByArticle, patchArticle, handleDeleteComment} = require('./controllers/controllers.js')
 app.use(express.json());
 
 app.get('/api/topics', getTopics);
@@ -9,7 +9,8 @@ app.get('/api/articles/:article_id', getArticlesID);
 app.get('/api/articles', getAllArticles);
 app.get('/api/articles/:article_id/comments', getCommentsByArticle);
 app.post('/api/articles/:article_id/comments', postCommentByArticle);
-app.patch('/api/articles/:article_id', patchArticle)
+app.patch('/api/articles/:article_id', patchArticle);
+app.delete('/api/comments/:comment_id', handleDeleteComment);
 
 
 
@@ -23,6 +24,7 @@ app.use((req, res, next) => {
 
 // Middleware to handle specific error codes
 app.use((err, req, res, next) => {
+
     if (err.code === '22P02' || err.code === '23502' || err.code === '23503') {
         res.status(400).send({ msg: 'Bad request' });
     } else {

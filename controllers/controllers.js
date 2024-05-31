@@ -1,4 +1,4 @@
-const {selectTopics, selectArticleByID, selectAllArticles, selectCommentsByArticle, insertCommentByArticle, updateArticle} = require('../models/models.js')
+const {selectTopics, selectArticleByID, selectAllArticles, selectCommentsByArticle, insertCommentByArticle, updateArticle,deleteComment} = require('../models/models.js')
 const endpointsJson = require('../endpoints.json');
 
 exports.getTopics = (req, res, next) => {
@@ -71,4 +71,23 @@ exports.patchArticle = (req, res, next) => {
         .catch((err) => {
             next(err);
         });
+}
+
+exports.handleDeleteComment = (req, res, next) => {
+    deleteComment(req.params.comment_id)
+        .then((deletedResult) => {
+            if (deletedResult.rowCount === 0) {
+                const err = new Error('Invalid input');
+                err.status = 404;
+                err.msg = 'Invalid input';
+                next(err);
+            } else {
+                res.status(204).send();
+            }
+
+        })
+        .catch((err) => {
+            next(err);
+        });
+
 }
