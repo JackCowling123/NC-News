@@ -232,3 +232,24 @@ describe('DELETE /api/comments/:comment_id', () => {
 
 })
 
+describe('GET /api/users', () => {
+    test('Responds with a status 200 containing an array of objects, each containing the desire properties', () => {
+        return request(app).get('/api/users').expect(200)
+            .then(({body}) => {
+                expect(Array.isArray(body)).toBe(true);
+                body.forEach((user) => {
+                    expect(typeof user).toBe('object');
+                    expect(user).toHaveProperty('username');
+                    expect(user).toHaveProperty('name');
+                    expect(user).toHaveProperty('avatar_url');
+                })
+            })
+    })
+    test('Responds with a status 404 when requested route does not exist', () => {
+        return request(app).get('/api/notARoute').expect(404)
+            .then(({ body }) => {
+                    expect(body.msg).toBe('Invalid input');
+                })
+            })
+})
+
