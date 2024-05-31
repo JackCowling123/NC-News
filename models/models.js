@@ -20,12 +20,27 @@ exports.selectArticleByID = (article_id) => {
         })
 }
 
-exports.selectAllArticles = () => {
-    return db
-        .query('SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.comment_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id ORDER BY created_at DESC;')
+exports.selectAllArticles = (topic) => {
+    let articleQuery = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.comment_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id ORDER BY created_at DESC;`
+    let params = [];
+
+    let topicQuery = false
+    if(topic) {
+        articleQuery = articleQuery.replace("GROUP BY", `WHERE articles.topic = $1 GROUP BY`);
+        params.push(topic);
+        topicQuery = true;
+    }
+
+
+
+    return db.query(articleQuery, params)
         .then((result) => {
-            return result.rows;
+
+            return {queryResult: result.rows, topicQuery: topicQuery};
         })
+        .catch((err) => {
+            throw err;
+        });
 }
 
 exports.selectCommentsByArticle = (article_id) => {
