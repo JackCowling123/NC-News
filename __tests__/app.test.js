@@ -174,7 +174,7 @@ describe('POST /api/articles/:article_id/comments', () => {
     })
 })
 
-describe.only('Patch /api/articles/:article_id', () => {
+describe('Patch /api/articles/:article_id', () => {
     test('Responds with a status 200 containing the posted comment, with votes incremented by 5', () => {
         const testPatchArticle = { inc_votes: 5};
 
@@ -209,3 +209,26 @@ describe.only('Patch /api/articles/:article_id', () => {
     })
 
 })
+
+describe('DELETE /api/comments/:comment_id', () => {
+    test('Responds with a status 204 and no content', () => {
+        return request(app).delete('/api/comments/9').expect(204)
+            .then(() => {
+                return request(app).get('/api/comments/9').expect(404);
+            })
+    })
+    test('Responds with a status 404 when given a resource that does not exist', () => {
+        return request(app).delete('/api/comments/9999').expect(404)
+            .then(({body}) => {
+                expect(body.msg).toBe('Invalid input');
+            })
+    })
+    test('Responds with a status 400 Bad Request when given an invalid ID', () => {
+        return request(app).delete('/api/comments/notAnId').expect(400)
+            .then(({body}) => {
+                expect(body.msg).toBe('Bad request');
+            })
+    })
+
+})
+
