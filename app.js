@@ -19,7 +19,6 @@ app.get('/api/users', getAllUsers);
 
 // Middleware to catch 404 errors (route not found)
 app.use((req, res, next) => {
-    console.log('invoked');
     const err = new Error('Invalid input');
     err.status = 404;
     err.msg = 'Invalid input';
