@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const {getTopics, getAPI, getArticlesID, getAllArticles, getCommentsByArticle, postCommentByArticle, patchArticle, handleDeleteComment, getAllUsers} = require('./controllers/controllers.js')
 app.use(express.json());
+const cors = require('cors');
 
 app.get('/api/topics', getTopics);
 app.get('/api', getAPI);
@@ -14,7 +15,7 @@ app.delete('/api/comments/:comment_id', handleDeleteComment);
 app.get('/api/users', getAllUsers);
 
 
-
+app.use(cors());
 
 
 // Middleware to catch 404 errors (route not found)
