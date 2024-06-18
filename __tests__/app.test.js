@@ -282,7 +282,7 @@ describe('GET /api/articles (topic query)', () => {
 //
 //                 expect(articleBody.title).toBe("A");
 //                 expect(articleBody.topic).toBe("mitch");
-//                 expect(articleBody.author).toBe("icellusedkars");
+//                 expect(aYrticleBody.author).toBe("icellusedkars");
 //                 expect(articleBody.body).toBe("Delicious tin of cat food");
 //                 expect(articleBody.author).toBe("icellusedkars");
 //                 expect(articleBody.article_img_url).toBe("https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700");
